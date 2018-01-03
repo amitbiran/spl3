@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BidiProtocol implements BidiMessagingProtocol<String> {
     private static ConcurrentHashMap<String, AtomicBoolean> loglog = new ConcurrentHashMap<String, AtomicBoolean>();
     private boolean shouldTerminate = false;
-
+    private String name = "";
     private boolean isLoggedIn;
     private int connectionId;
     private Connections connections;
@@ -33,18 +33,33 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
         } else if (message.substring(0, 7).equals("REQUEST")) {
             msg = "REQUEST";
             dataholder = message.substring(8);
+        } else if (message.substring(0, 7).equals("SIGNOUT")) {
+            msg = "SIGNOUT";
+            dataholder = message.substring(8);
         }
         switch (msg) {
             case "SIGNOUT":
-                shouldTerminate = true;
-                connections.disconnect(connectionId);
+                if(isLoggedIn) {
+                 synchronized (loglog){
+                   shouldTerminate = true;//sould logout from the server
+                   loglog.get(name).set(false);
+                   loglog.remove(name);//todo delete?
+                   connections.send(connectionId, "ACK signout succeeded");
+                   connections.disconnect(connectionId);//get him out of connections
+                  }
+                }
+                else connections.send(connectionId, "ERROR request "+ this.name+ " "+ "failed");
+
+
                 break;
             case "REGISTER": {
                 String[] data = dataholder.split(" ");
                 boolean success;
-                if (isLoggedIn || loglog.get(data[0]) == null)
+                //todo syncronized open
+                if (isLoggedIn || loglog.get(data[0]) == null)//only read from loglog so no problem in here
                         success = MessageHandler.register(data);
                 else success = false;
+                //todo syncronized close
                 if(success){
                     connections.send(connectionId, "ACK registration succeeded");
                 }
@@ -55,7 +70,7 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                 data[1] - password
                 data[2] - Data Block - country="<country name">
                  */
-                //todo - Add user to data base. ack?
+
             }
             break;
             case "LOGIN": {
@@ -70,6 +85,7 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                             loglog.get(data[0]).set(true);
                         else
                             loglog.put(data[0], new AtomicBoolean(true));
+                        this.name = data[0];//todo
                         this.isLoggedIn = true;
                         connections.send(connectionId, "ACK login succeeded");
                     } else
@@ -79,11 +95,13 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                 data[0] - user name
                 data[1] - password
                  */
-                //todo - Check if user is in DB and add him to connections. ack?
+
             }
             break;
             case "REQUEST": {
                 String[] data = dataholder.split(" ");
+                connections.send(connectionId, MessageHandler.register(data));
+
                 /*
                 data[0] - name
                 data[1] - parameters

@@ -33,6 +33,15 @@ public class EchoClient {
             System.out.println("awaiting response");
             String line = in.readLine();
             System.out.println("message from server: " + line);
+            //////////////
+            out.write("SIGNOUT john potato");
+            out.newLine();
+            out.flush();
+
+            System.out.println("awaiting response");
+            line = in.readLine();
+            ////////////////////////////
+            System.out.println("message from server: " + line);
         }
     }
 }

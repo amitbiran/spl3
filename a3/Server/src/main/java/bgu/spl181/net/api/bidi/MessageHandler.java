@@ -5,6 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 public class MessageHandler {
 
     public static boolean register (String[] data){
+        if(JsonHandler.getUser(data[0])!=null)return false;//todo user is already signed in
         if (data.length == 2)
             return JsonHandler.addUser(data);
         if (data.length == 3 && data[2].substring(0, 8).compareTo("country=") == 0){
@@ -24,6 +25,12 @@ public class MessageHandler {
                 ans = true;
             return ans;
         }
+    }
+
+    public static String request(String[] data){
+
+
+        return "";
     }
 
 

@@ -13,9 +13,11 @@ public class JsonHandler {
     public static BufferedReader buff = null;
     public static ArrayList<LinkedTreeMap> jsonUser = null;
     public static ArrayList<LinkedTreeMap> jsonMovie = null;
+    private static LinkedTreeMap<String, ArrayList> usersMap = null;//todo
+    private static LinkedTreeMap<String, ArrayList> moviesMap = null;//todo
 
 
-    public synchronized static LinkedTreeMap getUser(String datum) {
+    public  static LinkedTreeMap getUser(String datum) {
         ReadFromJson();
         for (LinkedTreeMap L : jsonUser){
             if (((String)L.get("username")).compareTo(datum) == 0)
@@ -24,10 +26,9 @@ public class JsonHandler {
         return null;
     }
 
-    public synchronized static boolean addUser(String[] data){
+    public  static boolean addUser(String[] data){
         boolean ans = false;
         ReadFromJson();
-
         LinkedTreeMap user = new LinkedTreeMap();
         user.put("username",data[0]);
         user.put("type","normal");
@@ -41,12 +42,12 @@ public class JsonHandler {
 
         try {
             buff = new BufferedReader(new FileReader(userPath));
-
         } catch (FileNotFoundException e){
             e.printStackTrace();
         }
-        LinkedTreeMap<String, ArrayList> M =((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class));
-        M.get("users").add(user);
+
+        LinkedTreeMap<String, ArrayList> M =usersMap;//todo
+        M.get("users").add(user);//todo
 
         String newJson = gson.toJson(M);
         ans = true;
@@ -65,6 +66,7 @@ public class JsonHandler {
         fileWriter.append(newJason);
         fileWriter.flush();
     }
+
     private synchronized static void ReadFromJson(){
         try {
             buff = new BufferedReader(new FileReader(userPath));
@@ -72,14 +74,16 @@ public class JsonHandler {
         } catch (FileNotFoundException e){
             e.printStackTrace();
         }
-        jsonUser = ((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class)).get("users");
+        usersMap = ((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class));//todo
+        jsonUser = usersMap.get("users");//todo
         try {
             buff = new BufferedReader(new FileReader(moviePath));
 
         } catch (FileNotFoundException e){
             e.printStackTrace();
         }
-        jsonMovie = ((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class)).get("movies");
+        moviesMap = ((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class));//todo
+        jsonMovie = moviesMap.get("movies");//todo
     }
 
 }
