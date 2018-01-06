@@ -2,10 +2,14 @@ package bgu.spl181.net.api.bidi;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MessageHandler {
 
     public static boolean register (String[] data){
-        if(JsonHandler.getUser(data[0])!=null)return false;//todo user is already signed in
+        if(JsonHandler.getUser(data[0],"password")!=null)return false;//todo user is already signed in
         if (data.length == 2)
             return JsonHandler.addUser(data);
         if (data.length == 3 && data[2].substring(0, 8).compareTo("country=") == 0){
@@ -20,18 +24,22 @@ public class MessageHandler {
             return false;
         else {
             boolean ans = false;
-            LinkedTreeMap user = JsonHandler.getUser(data[0]);
-            if (user != null && ((String)user.get("password")).compareTo(data[1]) == 0)
+            String password = JsonHandler.getUser(data[0],"password");
+            if (password != null && password.compareTo(data[1]) == 0)
                 ans = true;
             return ans;
         }
     }
 
-    public static String request(String[] data){
-
-
-        return "";
+    public static String request(String[] data,String name,String message){
+        //todo check if logged in
+        Request r = new Request(data,message,name);
+        if(r.call != null)
+        r.run();
+        else r.answer = "ERROR 404 ileagel request";
+        return r.answer;
     }
 
+    //check the request type and also check if the request has all the parameters it should have
 
 }

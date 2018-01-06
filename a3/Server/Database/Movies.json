@@ -1,46 +1,43 @@
 {
-  "users": [
+  "movipricees": [
     {
-      "username": "john",
-      "type": "admin",
-      "password": "potato",
-      "country": "united states",
-      "movies": [],
-      "balance": "0"
+      "id": "1",
+      "name": "The Godfather",
+      "price": "25",
+      "bannedCountries": [
+        "united kingdom",
+        "italy"
+      ],
+      "availableAmount": "1",
+      "totalAmount": "2"
     },
     {
-      "username": "lisa",
-      "type": "normal",
-      "password": "chips123",
-      "country": "spain",
-      "movies": [
-        {
-          "id": "2",
-          "name": "The Pursuit Of Happyness"
-        },
-        {
-          "id": "3",
-          "name": "The Notebook"
-        }
-      ],
-      "balance": "37"
+      "id": "2",
+      "name": "The Pursuit Of Happyness",
+      "price": "14",
+      "bannedCountries": [],
+      "availableAmount": "3",
+      "totalAmount": "5"
     },
     {
-      "username": "shlomi",
-      "type": "normal",
-      "password": "cocacola",
-      "country": "israel",
-      "movies": [
-        {
-          "id": "1",
-          "name": "The Godfather"
-        },
-        {
-          "id": "2",
-          "name": "The Pursuit Of Happyness"
-        }
+      "id": "3",
+      "name": "The Notebook",
+      "price": "5",
+      "bannedCountries": [],
+      "availableAmount": "0",
+      "totalAmount": "1"
+    },
+    {
+      "id": "4",
+      "name": "Justice League",
+      "price": "17",
+      "bannedCountries": [
+        "jordan",
+        "iran",
+        "lebanon"
       ],
-      "balance": "112"
+      "availableAmount": "4",
+      "totalAmount": "4"
     }
   ]
 }

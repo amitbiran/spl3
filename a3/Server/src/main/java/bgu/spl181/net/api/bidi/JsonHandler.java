@@ -17,16 +17,200 @@ public class JsonHandler {
     private static LinkedTreeMap<String, ArrayList> moviesMap = null;//todo
 
 
-    public  static LinkedTreeMap getUser(String datum) {
+
+    public synchronized  static String getMovie(String moviename, String key){
         ReadFromJson();
-        for (LinkedTreeMap L : jsonUser){
-            if (((String)L.get("username")).compareTo(datum) == 0)
-                return L;
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+            if (((String)L.get("name")).compareTo(moviename) == 0)
+                return L.get(key);
         }
         return null;
     }
 
-    public  static boolean addUser(String[] data){
+    public synchronized static void addMovie(String movieName,String amount,String price,ArrayList<String> countries){
+            int id = jsonMovie.size()+1;
+            LinkedTreeMap<String, Object> M = new LinkedTreeMap<String,Object>();
+            M.put("id",Integer.toString(id));
+            M.put("name",movieName);
+            M.put("price",price);
+            M.put("bannedCountries",countries);
+            M.put("availableAmount", amount);
+            M.put("totalAmount",amount);
+            jsonMovie.add(M);
+        try {
+            WriteToJson(moviePath,gson.toJson(moviesMap));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public synchronized static boolean removeMovie(String movieName){
+        boolean ans = false;
+        ReadFromJson();
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+            if (((String)L.get("name")).compareTo(movieName) == 0) {
+                String availableMount =L.get("availableAmount");
+                String totalAmount = L.get("totalAmount");
+                if(availableMount.compareTo(totalAmount)==0){
+                    jsonMovie.remove(L);
+                    try {
+                        WriteToJson(moviePath,gson.toJson(moviesMap));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    public synchronized static void changeMovie(String movieName,String key,String value){
+        ReadFromJson();
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+            if (((String)L.get("name")).compareTo(movieName) == 0) {
+                L.remove(key);
+                L.put(key,value);
+                try {
+                    WriteToJson(moviePath,gson.toJson(moviesMap));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public synchronized static boolean takeMovie(String moviename){
+        ReadFromJson();
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+            if (((String)L.get("name")).compareTo(moviename) == 0){
+                int amount = Integer.parseInt(L.get("availableAmount"));
+                if (amount ==0)return false;
+                amount --;
+                L.remove("availableAmount");
+                L.put("availableAmount",Integer.toString(amount));
+                try {
+                    WriteToJson(moviePath,gson.toJson(moviesMap));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public synchronized static boolean userHasMovie(String moviename,String username){
+        ReadFromJson();
+        boolean ans =false;
+        for (LinkedTreeMap L : jsonUser){
+            if (((String)L.get("username")).compareTo(username) == 0){
+                ArrayList<LinkedTreeMap> movies = (ArrayList<LinkedTreeMap>) L.get("movies");
+                for (LinkedTreeMap<String,String> item : movies){
+                    if(item.get("name").compareTo(moviename)==0){
+                        ans =true;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+//has movie in jason
+    public synchronized static boolean hasMovie(String moviename){
+        ReadFromJson();
+        boolean ans =false;
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+            if (((String)L.get("name")).compareTo(moviename) == 0)
+                ans =true;
+        }
+        return ans;
+    }
+
+    public synchronized static ArrayList<String> getAllMovies(){
+        ReadFromJson();
+        ArrayList<String> ans = new ArrayList<String>();
+        for (LinkedTreeMap<String , String> L : jsonMovie){
+           String temp = new String((String)L.get("name"));
+           ans.add(temp);
+        }
+        return ans;
+    }
+
+    public synchronized  static ArrayList getCountry(String moviename){
+        ReadFromJson();
+        for (LinkedTreeMap<String,Object> L : jsonMovie){
+            String temp = (String) L.get("name");
+            if (temp.compareTo(moviename) == 0) {
+                ArrayList ans = (ArrayList) (L.get("bannedCountries"));
+                return ans;
+            }
+        }
+            return null;
+    }
+
+
+
+    public synchronized static String getUser(String username,String key) {
+        ReadFromJson();
+        for (LinkedTreeMap<String , String> L : jsonUser){
+            if (((String)L.get("username")).compareTo(username) == 0)
+                return L.get(key);
+        }
+        return null;
+    }
+
+    public synchronized  static void giveReturnMovie(String username,String moviename,String movieId,boolean give) {
+        ReadFromJson();
+        for (LinkedTreeMap L : jsonUser){
+            if (((String)L.get("username")).compareTo(username) == 0){
+                ArrayList<LinkedTreeMap<String,String>> usersMovies  = (ArrayList<LinkedTreeMap<String,String>>)L.get("movies");
+                if(give){
+                    LinkedTreeMap<String,String> M = new LinkedTreeMap<String,String>();
+                    M.put("id",movieId);
+                    M.put("name",moviename);
+                    usersMovies.add(M);
+                }
+                else{//remove the movie from the user
+                    for(LinkedTreeMap<String,String> item:usersMovies){
+                        if(item.get("name").compareTo(moviename) == 0 ){
+                            usersMovies.remove(item);
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        try {
+            WriteToJson(userPath,gson.toJson(usersMap));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized static void changeUser(String username,String key,String value){
+        ReadFromJson();
+        for (LinkedTreeMap<String , String> L : jsonUser){
+            if (((String)L.get("username")).compareTo(username) == 0) {
+                L.remove(key);
+                L.put(key,value);
+                try {
+                    WriteToJson(userPath,gson.toJson(usersMap));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public synchronized   static boolean addUser(String[] data){
         boolean ans = false;
         ReadFromJson();
         LinkedTreeMap user = new LinkedTreeMap();
@@ -60,6 +244,10 @@ public class JsonHandler {
 
         return ans;
     }
+
+
+
+
     private synchronized static void WriteToJson( String path, String newJason) throws IOException {
         File file = new File(path);
         FileWriter fileWriter = new FileWriter(file);
@@ -83,7 +271,7 @@ public class JsonHandler {
             e.printStackTrace();
         }
         moviesMap = ((LinkedTreeMap<String, ArrayList>)gson.fromJson(buff, Object.class));//todo
-        jsonMovie = moviesMap.get("movies");//todo
+        jsonMovie = moviesMap.get("movipricees");//todo
     }
 
 }

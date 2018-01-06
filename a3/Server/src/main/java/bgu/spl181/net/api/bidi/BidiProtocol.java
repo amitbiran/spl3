@@ -1,5 +1,7 @@
 package bgu.spl181.net.api.bidi;
 
+import sun.plugin2.message.Message;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,18 +26,18 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
         String msg = "";
         String dataholder = "";
 
-        if (message.substring(0, 8).equals("REGISTER")) {
+        if (message.length() >=8 &&message.substring(0, 8).equals("REGISTER")) {
             msg = "REGISTER";
             dataholder = message.substring(9);
-        } else if (message.substring(0, 5).equals("LOGIN")) {
+        } else if (message.length() >=5 &&message.substring(0, 5).equals("LOGIN")) {
             msg = "LOGIN";
             dataholder = message.substring(6);
-        } else if (message.substring(0, 7).equals("REQUEST")) {
+        } else if (message.length() >=7 &&message.substring(0, 7).equals("REQUEST")) {
             msg = "REQUEST";
-            dataholder = message.substring(8);
-        } else if (message.substring(0, 7).equals("SIGNOUT")) {
+            dataholder = message;
+        } else if (message.length() >=7 &&message.substring(0, 7).equals("SIGNOUT")) {
             msg = "SIGNOUT";
-            dataholder = message.substring(8);
+            dataholder = message.substring(7);
         }
         switch (msg) {
             case "SIGNOUT":
@@ -48,7 +50,7 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                    connections.disconnect(connectionId);//get him out of connections
                   }
                 }
-                else connections.send(connectionId, "ERROR request "+ this.name+ " "+ "failed");
+                else connections.send(connectionId, "ERROR signout "+  "failed");
 
 
                 break;
@@ -98,16 +100,22 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
 
             }
             break;
-            case "REQUEST": {
+            case "REQUEST":
                 String[] data = dataholder.split(" ");
-                connections.send(connectionId, MessageHandler.register(data));
-
+                if(!isLoggedIn){
+                    String error = new String ("ERROR request " + Request.getRequestType(data) + " failed");
+                    connections.send(connectionId, error);
+                }
+               else {
+                    connections.send(connectionId, MessageHandler.request(data, this.name, message));
+                } //     System.out.println(message);
+            //    System.out.println(data);
                 /*
                 data[0] - name
                 data[1] - parameters
                  */
                 //todo - implement. ack?
-            }
+
             break;
 
         }

@@ -34,13 +34,23 @@ public class EchoClient {
             String line = in.readLine();
             System.out.println("message from server: " + line);
             //////////////
-            out.write("SIGNOUT john potato");
+            out.write("REQUEST changeprice \"Justice League\" 9898");
+            out.newLine();
+            out.flush();
+
+            System.out.println("awaiting response");
+            line = in.readLine();
+            System.out.println("message from server: " + line);
+            ////////////////////////////
+            //////////////
+            out.write("SIGNOUT");
             out.newLine();
             out.flush();
 
             System.out.println("awaiting response");
             line = in.readLine();
             ////////////////////////////
+
             System.out.println("message from server: " + line);
         }
     }
