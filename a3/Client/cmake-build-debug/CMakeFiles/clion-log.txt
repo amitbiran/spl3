@@ -1,0 +1,5 @@
+/home/amit/Desktop/clion-2017.2.3/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/amit/Desktop/ass3/spl3/a3/Client
+-- Boost version: 1.58.0
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/amit/Desktop/ass3/spl3/a3/Client/cmake-build-debug

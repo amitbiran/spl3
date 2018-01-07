@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class JsonHandler {
     public static Gson gson = new Gson();
-    public static String userPath = "Database\\Clients.json";
-    public static String moviePath = "Database\\Movies.json";
+    public static String userPath = "Database/Clients.json";
+    public static String moviePath = "Database/Movies.json";
     public static BufferedReader buff = null;
     public static ArrayList<LinkedTreeMap> jsonUser = null;
     public static ArrayList<LinkedTreeMap> jsonMovie = null;
@@ -210,15 +210,17 @@ public class JsonHandler {
 
     }
 
-    public synchronized   static boolean addUser(String[] data){
+    public synchronized  static boolean addUser(String[] data){
         boolean ans = false;
         ReadFromJson();
         LinkedTreeMap user = new LinkedTreeMap();
         user.put("username",data[0]);
         user.put("type","normal");
         user.put("password",data[1]);
-        if (data.length == 3)
-            user.put("country",data[2]);
+        if (data.length == 3) {
+            data[2] = Request.getMoiveName(data[2]);
+            user.put("country", data[2]);
+        }
         else
             user.put("country","");
         user.put("movies", new ArrayList<LinkedTreeMap>());

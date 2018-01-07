@@ -35,7 +35,7 @@ public class TPCMain extends BaseServer<String>{
                 return new BidiMessageEncoderDecoder<String>();
             }
         };
-        Server<String> server = Server.threadPerClient(80, supplier1, supplier2);
+        Server<String> server = Server.threadPerClient(8080, supplier1, supplier2);
         server.serve();
         Object time = new Object();
         try {

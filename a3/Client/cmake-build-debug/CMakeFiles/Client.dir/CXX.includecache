@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/amit/Desktop/ass3/spl3/a3/Client/include/connectionHandler.h
+string
+-
+iostream
+-
+boost/asio.hpp
+-
+
+/home/amit/Desktop/ass3/spl3/a3/Client/src/connectionHandler.cpp
+../include/connectionHandler.h
+/home/amit/Desktop/ass3/spl3/a3/Client/include/connectionHandler.h
+
+/home/amit/Desktop/ass3/spl3/a3/Client/src/echoClient.cpp
+stdlib.h
+-
+../include/connectionHandler.h
+/home/amit/Desktop/ass3/spl3/a3/Client/include/connectionHandler.h
+

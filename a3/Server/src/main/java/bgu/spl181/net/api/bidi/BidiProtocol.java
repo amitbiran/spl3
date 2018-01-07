@@ -1,6 +1,6 @@
 package bgu.spl181.net.api.bidi;
 
-import sun.plugin2.message.Message;
+
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +43,7 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
             case "SIGNOUT":
                 if(isLoggedIn) {
                  synchronized (loglog){
-                   shouldTerminate = true;//sould logout from the server
+                 //  shouldTerminate = true;//sould logout from the server
                    loglog.get(name).set(false);
                    loglog.remove(name);//todo delete?
                    connections.send(connectionId, "ACK signout succeeded");
