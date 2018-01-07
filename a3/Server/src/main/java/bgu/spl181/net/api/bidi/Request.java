@@ -10,6 +10,7 @@ public class Request {
     Runnable call;
     String name ;
     public String answer;
+    public String broadcast;
 
 
 
@@ -112,7 +113,9 @@ public class Request {
                     JsonHandler.changeUser(name,"balance", Integer.toString(money - price));
                     JsonHandler.giveReturnMovie(name,moviename,id,true);//give user the movie
                     answer = "ACK rent " + "\"" + moviename + "\"" + " success";
-                    //todo broadcast
+                    String copies = JsonHandler.getMovie(moviename,"availableAmount");
+                    broadcast = "BROADCAST movie " + "\"" + moviename + "\"" + " " + copies + " " + priceStr;
+
                 };
                 break;
 
@@ -143,7 +146,9 @@ public class Request {
                     amount++;
                     JsonHandler.changeMovie(movieName,"availableAmount",Integer.toString(amount));
                     answer = "ACK return " + "\"" + movieName + "\"" + " success";
-                    //todo broadcast
+                    String copies = JsonHandler.getMovie(movieName,"availableAmount");
+                    String priceStr = JsonHandler.getMovie(movieName,"price");
+                    broadcast = "BROADCAST movie " + "\"" + movieName + "\"" + " " + copies + " " + priceStr;
                 };
                 break;
 
@@ -181,7 +186,8 @@ public class Request {
                     }
                     JsonHandler.addMovie(movieName,amountStr,priceStr,countries);
                     answer = "ACK addmovie " + "\"" +movieName + "\"" +" success";
-                    //todo broadcast
+                    String copies = JsonHandler.getMovie(movieName,"availableAmount");
+                    broadcast = "BROADCAST movie " + "\"" + movieName + "\"" + " " + copies + " " + priceStr;
                 };
                 break;
 
@@ -205,7 +211,7 @@ public class Request {
                         return;
                     }
                     answer = "ACK remmovie " + "\"" + movieName + "\"" + " success";
-                    //todo broadcast
+                    broadcast = "BROADCAST movie " + "\"" + movieName + "\"" + " removed" ;
                 };
                 break;
 
@@ -239,7 +245,9 @@ public class Request {
 
                     JsonHandler.changeMovie(movieName,"price", numbers.get(0));
                     answer = "ACK changeprice " + "\"" +movieName + "\"" + " success";
-                    //todo broadcast
+                    String copies = JsonHandler.getMovie(movieName,"availableAmount");
+                    String priceStr = JsonHandler.getMovie(movieName,"price");
+                    broadcast = "BROADCAST movie " + "\"" + movieName + "\"" + " " + copies + " " + priceStr;
                 };
                 break;
 

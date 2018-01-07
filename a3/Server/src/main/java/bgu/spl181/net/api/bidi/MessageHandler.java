@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 public class MessageHandler {
 
+
     public static boolean register (String[] data){
         if(JsonHandler.getUser(data[0],"password")!=null)return false;//todo user is already signed in
         if (data.length == 2)
@@ -31,13 +32,12 @@ public class MessageHandler {
         }
     }
 
-    public static String request(String[] data,String name,String message){
-        //todo check if logged in
+    public static Request request(String[] data,String name,String message){
         Request r = new Request(data,message,name);
         if(r.call != null)
         r.run();
         else r.answer = "ERROR 404 ileagel request";
-        return r.answer;
+        return r;
     }
 
     //check the request type and also check if the request has all the parameters it should have

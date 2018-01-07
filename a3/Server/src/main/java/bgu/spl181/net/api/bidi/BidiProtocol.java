@@ -43,7 +43,7 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
             case "SIGNOUT":
                 if(isLoggedIn) {
                  synchronized (loglog){
-                   shouldTerminate = true;//sould logout from the server
+              //     shouldTerminate = true;//sould logout from the server
                    loglog.get(name).set(false);
                    loglog.remove(name);//todo delete?
                    connections.send(connectionId, "ACK signout succeeded");
@@ -107,7 +107,11 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                     connections.send(connectionId, error);
                 }
                else {
-                    connections.send(connectionId, MessageHandler.request(data, this.name, message));
+                    Request r = MessageHandler.request(data, this.name, message);
+                    String answer = r.answer;
+                    String broadcast = r.broadcast;
+                    connections.send(connectionId,answer);
+                    if(broadcast != null)connections.broadcast(broadcast);
                 } //     System.out.println(message);
             //    System.out.println(data);
                 /*

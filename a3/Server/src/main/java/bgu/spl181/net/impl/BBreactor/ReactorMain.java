@@ -27,7 +27,7 @@ public class ReactorMain  {
                 return new BidiMessageEncoderDecoder<String>();
             }
         };
-        Server<String> server = Server.reactor(5,8080, supplier1, supplier2);
+        Server<String> server = Server.reactor(5,7777, supplier1, supplier2);
         server.serve();
         Object time = new Object();
         try {
