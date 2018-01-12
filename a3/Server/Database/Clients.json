@@ -1,9 +1,9 @@
 {
   "users": [
     {
-      "username": "john",
+      "username": "admin",
       "type": "admin",
-      "password": "potato",
+      "password": "admin",
       "country": "united states",
       "movies": [],
       "balance": "0"

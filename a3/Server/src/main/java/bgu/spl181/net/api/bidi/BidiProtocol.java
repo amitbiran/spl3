@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BidiProtocol implements BidiMessagingProtocol<String> {
     private static ConcurrentHashMap<String, AtomicBoolean> loglog = new ConcurrentHashMap<String, AtomicBoolean>();
+    private static ConcurrentHashMap<String, Integer> loglogID = new ConcurrentHashMap<String, Integer>();
     private boolean shouldTerminate = false;
     private String name = "";
     private boolean isLoggedIn;
@@ -85,8 +86,11 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                     if (success) {
                         if (loglog.get(data[0]) != null)
                             loglog.get(data[0]).set(true);
-                        else
+                        else{
                             loglog.put(data[0], new AtomicBoolean(true));
+                            loglogID.put(data[0], connectionId);
+                        }
+
                         this.name = data[0];//todo
                         this.isLoggedIn = true;
                         connections.send(connectionId, "ACK login succeeded");
@@ -111,7 +115,14 @@ public class BidiProtocol implements BidiMessagingProtocol<String> {
                     String answer = r.answer;
                     String broadcast = r.broadcast;
                     connections.send(connectionId,answer);
-                    if(broadcast != null)connections.broadcast(broadcast);
+
+
+                    if(broadcast != null){
+                        for (String k :loglog.keySet()){
+                            connections.send(loglogID.get(k), broadcast);
+                        }
+                        //connections.broadcast(broadcast);
+                    }
                 } //     System.out.println(message);
             //    System.out.println(data);
                 /*

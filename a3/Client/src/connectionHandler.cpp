@@ -7,7 +7,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-ConnectionHandler::ConnectionHandler(string host, short port): host_(host), port_(port), io_service_(), socket_(io_service_){}
+ConnectionHandler::ConnectionHandler(string host, short port,std::atomic<bool> &run): host_(host), port_(port), run_(run),io_service_(),socket_(io_service_){}
     
 ConnectionHandler::~ConnectionHandler() {
     close();
@@ -96,6 +96,7 @@ bool ConnectionHandler::sendFrameAscii(const std::string& frame, char delimiter)
 void ConnectionHandler::close() {
     try{
         socket_.close();
+        run_ = false;
     } catch (...) {
         std::cout << "closing failed: connection already closed" << std::endl;
     }

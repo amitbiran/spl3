@@ -19,11 +19,11 @@ public class TPCMain extends BaseServer<String>{
     }
 
     public static void main (String[] args) throws IOException{
-        /*
+
         if (args.length != 1) {
             System.err.println("Usage: java BidiServer <port number>");
             System.exit(1);
-        }*/
+        }
         Supplier<BidiMessagingProtocol<String>> supplier1 = new Supplier<BidiMessagingProtocol<String>>() {
             @Override
             public BidiMessagingProtocol<String> get() {
@@ -35,14 +35,9 @@ public class TPCMain extends BaseServer<String>{
                 return new BidiMessageEncoderDecoder<String>();
             }
         };
-        Server<String> server = Server.threadPerClient(8080, supplier1, supplier2);
+        Server<String> server = Server.threadPerClient(Integer.parseInt(args[0]), supplier1, supplier2);
         server.serve();
-        Object time = new Object();
-        try {
-            time.wait(1000000000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
 
     }
 

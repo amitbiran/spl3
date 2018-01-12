@@ -35,7 +35,7 @@ public class MessageHandler {
     public static Request request(String[] data,String name,String message){
         Request r = new Request(data,message,name);
         if(r.call != null)
-        r.run();
+            r.run();
         else r.answer = "ERROR 404 ileagel request";
         return r;
     }
